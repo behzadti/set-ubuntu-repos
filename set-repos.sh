@@ -6,6 +6,18 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
+# Check if curl is installed
+if ! command -v curl &> /dev/null; then
+  echo "curl is not installed. Installing curl..."
+  apt update && apt install -y curl
+  if [ $? -eq 0 ]; then
+    echo "curl installed successfully."
+  else
+    echo "Failed to install curl. Exiting."
+    exit 1
+  fi
+fi
+
 # Backup the sources.list file
 backup_sources_list() {
   if [ ! -f /etc/apt/sources.list.bak ]; then
